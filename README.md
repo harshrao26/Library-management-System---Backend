@@ -94,45 +94,16 @@ Before you start, ensure you have the following:
 ## Usage
 
 - Use tools like **Postman** or **cURL** to test the API.
-- Postman collection for API testing is available [here](#postman-collection).
-
 ---
 
-## API Endpoints
-
-### Authentication
-- **POST** `/api/auth/register`: Register a new user (Admin approval required).
-- **POST** `/api/auth/login`: Login and get a JWT token.
-
-### User Management (Admin only)
-- **POST** `/api/users`: Create a new user.
-- **PUT** `/api/users/:id`: Update user details.
-- **DELETE** `/api/users/:id`: Delete a user.
-
-### Book Management
-- **POST** `/api/books`: Add a book (Admin only).
-- **PUT** `/api/books/:id`: Update a book (Admin only).
-- **DELETE** `/api/books/:id`: Delete a book (Admin only).
-- **GET** `/api/books`: View all books (Admin, Librarian, Member).
-
-### Borrowing Operations
-- **POST** `/api/borrow`: Borrow a book (Member only, check availability).
-- **POST** `/api/return`: Return a book (Member only).
-- **POST** `/api/record`: Record borrowing/returning (Librarian only).
-
----
 
 ## Postman Collection
 
-Download the [Postman Collection](#) to test all API endpoints.
+Download the [Library Management API Collection](./LibraryManagementAPI.postman_collection.json)
+to test all API endpoints.
 
 ---
 
-## Validation
-
-- **Joi** is used for validating request payloads to ensure the correctness of incoming data.
-
----
 
 ## Key Functionalities
 
