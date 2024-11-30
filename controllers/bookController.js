@@ -33,7 +33,7 @@ export const addBook = async (req, res) => {
 // Update book details
 export const updateBook = async (req, res) => {
   try {
-    const { bookId } = req.params; // Get the bookId from the URL
+    const { bookId } = req.params;
     const { title, author, genre, publishedDate, availableCopies } = req.body;
 
     // Find the book by ID
@@ -68,7 +68,7 @@ export const updateBook = async (req, res) => {
 // Delete a book
 export const deleteBook = async (req, res) => {
   try {
-    const { bookId } = req.params; // Get the bookId from the URL
+    const { bookId } = req.params; 
 
     // Find and delete the book by ID
     const book = await Book.findByIdAndDelete(bookId);
@@ -110,8 +110,8 @@ export const getAllBooks = async (req, res) => {
 // Borrow a book (for members)
 export const borrowBook = async (req, res) => {
   try {
-    const { bookId } = req.params; // Get the bookId from the URL
-    const userId = req.user.id; // Assuming user ID is in the JWT (for members)
+    const { bookId } = req.params; 
+    const userId = req.user.id; 
 
     // Find the book by ID
     const book = await Book.findById(bookId);
@@ -134,7 +134,7 @@ export const borrowBook = async (req, res) => {
       borrowedAt: new Date(),
     });
 
-    await transaction.save(); // Save the borrowing transaction
+    await transaction.save();
 
     // Update the book's available copies
     book.availableCopies -= 1;
@@ -156,8 +156,8 @@ export const borrowBook = async (req, res) => {
 // Return a book (for members)
 export const returnBook = async (req, res) => {
   try {
-    const { bookId } = req.params; // Get the bookId from the URL
-    const userId = req.user.id; // Assuming user ID is in the JWT
+    const { bookId } = req.params;
+    const userId = req.user.id;
 
     // Find the book by ID
     const book = await Book.findById(bookId);
@@ -170,7 +170,7 @@ export const returnBook = async (req, res) => {
     const transaction = await Transaction.findOne({
       userId,
       bookId: book._id,
-      returnedAt: null, // Only consider transactions that haven't been returned
+      returnedAt: null,
     });
 
     if (!transaction) {
@@ -203,9 +203,9 @@ export const getAllTransactions = async (req, res) => {
   try {
     // Retrieve all transactions from the database
     const transactions = await Transaction.find()
-      .populate("userId", "name email") // Populate user info (optional)
-      .populate("bookId", "title author") // Populate book info (optional)
-      .sort({ borrowedAt: -1 }); // Sort by most recent transactions
+      .populate("userId", "name email") 
+      .populate("bookId", "title author")
+      .sort({ borrowedAt: -1 }); 
 
     res.status(200).json({
       message: "Transactions retrieved successfully",
@@ -223,12 +223,12 @@ export const getAllTransactions = async (req, res) => {
 // Get borrow/return transactions for the logged-in member
 export const getMemberTransactions = async (req, res) => {
   try {
-    const userId = req.user.id; // Get the logged-in user's ID from the JWT
+    const userId = req.user.id; 
 
     // Find transactions for the logged-in member
     const transactions = await Transaction.find({ userId })
       .populate("bookId", "title author") // Populate book details
-      .sort({ borrowedAt: -1 }); // Sort transactions by most recent
+      .sort({ borrowedAt: -1 }); 
 
     if (transactions.length === 0) {
       return res

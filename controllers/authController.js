@@ -23,9 +23,6 @@ export const registerAdmin = async (req, res) => {
       return res.status(400).json({ message: "Admin already exists" });
     }
 
-    // Hash the password
-    // const hashedPassword = await bcrypt.hash(password, 10);
-    
 
     // Create and save the Admin user
     const adminUser = new User({
@@ -47,7 +44,7 @@ export const registerAdmin = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error registering Admin:", error); // Log the error for debugging
+    console.error("Error registering Admin:", error); 
     res
       .status(500)
       .json({ message: "Error registering Admin", error: error.message });
@@ -60,11 +57,11 @@ export const loginAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    console.log("Admin login attempt:", { email }); // Log the incoming email
+    console.log("Admin login attempt:", { email });
 
     // Check if the user exists and is an Admin
     const adminUser = await User.findOne({ email });
-    console.log("Found admin user:", adminUser); // Log the admin user found from DB
+    console.log("Found admin user:", adminUser); 
 
     if (!adminUser) {
       return res.status(404).json({ message: "Admin not found" });
@@ -72,13 +69,13 @@ export const loginAdmin = async (req, res) => {
 
     // Check if the user is an Admin
     if (adminUser.role !== "Admin") {
-      console.log("Access denied, not an admin:", adminUser.role); // Log the role of the user
+      console.log("Access denied, not an admin:", adminUser.role);
       return res.status(403).json({ message: "Access denied: Admins only" });
     }
 
     // Check if the Admin is approved
     if (adminUser.status !== "Approved") {
-      console.log("Admin not approved:", adminUser.status); // Log the status of the user
+      console.log("Admin not approved:", adminUser.status);
       return res.status(403).json({ message: "Admin not approved by system" });
     }
 
@@ -86,7 +83,7 @@ export const loginAdmin = async (req, res) => {
     const isPasswordMatch = await bcrypt.compare(password, adminUser.password);
     
 
-    console.log("Password match result:", isPasswordMatch); // Log the result of password comparison
+    console.log("Password match result:", isPasswordMatch);
 
     if (!isPasswordMatch) {
       return res.status(401).json({ message: "Invalid email or password" });
@@ -95,10 +92,10 @@ export const loginAdmin = async (req, res) => {
     // Generate JWT for Admin
     const token = jwt.sign(
       { id: adminUser._id, role: adminUser.role },
-      process.env.JWT_SECRET, // Secret for signing the token
-      { expiresIn: "1h" } // Token expiration time
+      process.env.JWT_SECRET, 
+      { expiresIn: "1h" }
     );
-    console.log("Generated token:", token); // Log the generated JWT token
+    console.log("Generated token:", token); 
 
     // Respond with the token and success message
     res.status(200).json({
@@ -106,7 +103,7 @@ export const loginAdmin = async (req, res) => {
       token,
     });
   } catch (error) {
-    console.log("Error during login:", error); // Log any errors that occur during the process
+    console.log("Error during login:", error); 
     res.status(500).json({ message: "Error logging in", error: error.message });
   }
 };
@@ -130,8 +127,7 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: "Email is already in use" });
     }
 
-    // Hash the password
-    // const hashedPassword = await bcrypt.hash(password, 10);
+    
 
     // Create and save user
     const newUser = new User({
@@ -139,8 +135,8 @@ export const registerUser = async (req, res) => {
       email,
       phone,
       password,
-      role: role || "Member", // Default role is Member
-      status: "Pending", // New users require admin approval
+      role: role || "Member", 
+      status: "Pending", 
     });
 
     await newUser.save();
@@ -170,20 +166,20 @@ export const loginUser = async (req, res) => {
 
 
     if (!user) {
-      console.log("User not found:", email); // Debugging log
+      console.log("User not found:", email); 
       return res.status(404).json({ message: "User not found" });
     }
 
     // Verify password
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log("Password match result:", isMatch); // Debugging log
+    console.log("Password match result:", isMatch); 
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
     // Check if user is approved
     if (user.status !== "Approved") {
-      console.log("User not approved:", user.status); // Debugging log
+      console.log("User not approved:", user.status); 
       return res
         .status(403)
         .json({ message: "User not approved by admin yet" });
@@ -193,7 +189,7 @@ export const loginUser = async (req, res) => {
     // Generate JWT Token
     const token = jwt.sign(
       { id: user._id, role: user.role },
-      process.env.JWT_SECRET, // Ensure you have the correct secret in your .env file
+      process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
@@ -202,14 +198,10 @@ export const loginUser = async (req, res) => {
       token,
     });
   } catch (error) {
-    console.log("Error logging in:", error); // Debugging log
+    console.log("Error logging in:", error); 
     res.status(500).json({ message: "Error logging in", error: error.message });
   }
 };
-
-// Approve 
-
-
 
 
 
@@ -219,9 +211,7 @@ export const updateUser = async (req, res) => {
     const { id } = req.params;
     const updates = req.body;
 
-    // if (updates.password) {
-    //   updates.password = await bcrypt.hash(updates.password, 10);
-    // }
+ 
 
     const updatedUser = await User.findByIdAndUpdate(id, updates, {
       new: true,
@@ -246,8 +236,8 @@ export const updateUser = async (req, res) => {
 // Delete a member (Admin-only access)
 export const deleteUser = async (req, res) => {
   try {
-    const { userId } = req.params; // Get userId from the URL
-    const adminId = req.user.id; // Get the admin's userId from the JWT
+    const { userId } = req.params;
+    const adminId = req.user.id; 
 
     // Ensure the logged-in user is an Admin
     if (req.user.role !== "Admin") {
@@ -255,7 +245,7 @@ export const deleteUser = async (req, res) => {
     }
 
     // Find the user by ID
-    const member = await User.findById(userId); // This will search for _id: userId
+    const member = await User.findById(userId);
 
     if (!member) {
       return res.status(404).json({ message: "User not found" });
@@ -269,10 +259,7 @@ export const deleteUser = async (req, res) => {
     }
 
     // Delete the user (Member)
-    await member.deleteOne(); // Deletes the member from the database
-
-    // Optionally, delete related transactions if needed
-    // await Transaction.deleteMany({ userId: member._id });
+    await member.deleteOne(); 
 
     res.status(200).json({
       message: "Member deleted successfully",
@@ -336,3 +323,92 @@ export const approveUser = async (req, res) => {
 };
 
 
+
+export const registerLibrarian = async (req, res) => {
+  try {
+    const { name, email, phone, password } = req.body;
+
+     if (!name || !email || !phone || !password) {
+       return res.status(400).json({ message: "All fields are required" });
+     }
+
+   
+
+    // Check if a user with the same email already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email already in use" });
+    }
+
+
+    // Create a new Librarian
+    const librarian = new User({
+      name,
+      email,
+      phone,
+      password,
+      role: "Librarian", 
+      status: "Approved",
+    });
+
+    // Save the Librarian to the database
+    await librarian.save();
+
+    res.status(201).json({
+      message: "Librarian registered successfully",
+      librarian: {
+        id: librarian._id,
+        name: librarian.name,
+        email: librarian.email,
+        role: librarian.role,
+      },
+    });
+  } catch (error) {
+    console.error("Error registering librarian:", error);
+    res
+      .status(500)
+      .json({ message: "Error registering librarian", error: error.message });
+  }
+};
+
+export const loginLibrarian = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Find the user by email
+    const librarian = await User.findOne({ email });
+
+    if (!librarian) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Ensure the user has the Librarian role
+    if (librarian.role !== "Librarian") {
+      return res
+        .status(403)
+        .json({ message: "Access denied: Librarians only" });
+    }
+
+    // Verify the password
+    const isPasswordValid = await bcrypt.compare(password, librarian.password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    // Generate a JWT token
+    const token = jwt.sign(
+      { id: librarian._id, role: librarian.role }, // Include user ID and role in the payload
+      process.env.JWT_SECRET, // Secret key for signing the token
+      { expiresIn: "1h" } // Token expires in 1 hour
+    );
+
+    res.status(200).json({
+      message: "Librarian logged in successfully",
+      token,
+    });
+  } catch (error) {
+    console.error("Error logging in librarian:", error);
+    res.status(500).json({ message: "Error logging in", error: error.message });
+  }
+};

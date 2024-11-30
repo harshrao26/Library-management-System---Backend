@@ -7,6 +7,8 @@ import {
   deleteUser,
   updateUser,
   approveUser,
+  registerLibrarian,
+  loginLibrarian,
 } from "../controllers/authController.js";
 import { roleMiddleware } from "../middleware/auth.js";
 
@@ -14,6 +16,10 @@ const router = express.Router();
 
 router.post("/register-admin", registerAdmin);
 router.post("/login-admin", loginAdmin);
+
+
+router.post("/register-librarian", registerLibrarian);
+router.post("/login-librarian", loginLibrarian);
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);

@@ -9,7 +9,7 @@ import {
   getAllTransactions,
   getMemberTransactions,
 } from "../controllers/bookController.js";
-import { roleMiddleware } from "../middleware/auth.js"; // Ensure only Admin can perform these actions
+import { roleMiddleware } from "../middleware/auth.js"; 
 const router = express.Router();
 
 // Route to add a new book (Admin-only access)
