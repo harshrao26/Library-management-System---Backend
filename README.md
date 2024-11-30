@@ -99,7 +99,7 @@ Before you start, ensure you have the following:
 
 ## Postman Collection
 
-Download the [Library Management API Collection](./LibraryManagementAPI.postman_collection.json)
+Download the [Library Management API Collection](/LibraryManagementAPI.postman_collection.json)
 to test all API endpoints.
 
 ---
